@@ -3,13 +3,13 @@ const fs = require('fs');
 const mysql = require('mysql2');
 
 const {
-    MYSQL_HOST: HOST,
+    MYSQL_HOST: localhost,
     MYSQL_HOST_FILE: HOST_FILE,
-    MYSQL_USER: USER,
+    MYSQL_USER: user,
     MYSQL_USER_FILE: USER_FILE,
-    MYSQL_PASSWORD: PASSWORD,
+    MYSQL_PASSWORD: secret,
     MYSQL_PASSWORD_FILE: PASSWORD_FILE,
-    MYSQL_DB: DB,
+    MYSQL_DB: todos,
     MYSQL_DB_FILE: DB_FILE,
 } = process.env;
 
