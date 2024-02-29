@@ -1,25 +1,16 @@
 const waitPort = require('wait-port');
 const fs = require('fs');
 const mysql = require('mysql2');
+require('dotenv').config();
 
-const {
-    MYSQL_HOST: localhost,
-    MYSQL_HOST_FILE: HOST_FILE,
-    MYSQL_USER: user,
-    MYSQL_USER_FILE: USER_FILE,
-    MYSQL_PASSWORD: secret,
-    MYSQL_PASSWORD_FILE: PASSWORD_FILE,
-    MYSQL_DB: todos,
-    MYSQL_DB_FILE: DB_FILE,
-} = process.env;
 
 let pool;
 
 async function init() {
-    const host = HOST_FILE ? fs.readFileSync(HOST_FILE) : HOST;
-    const user = USER_FILE ? fs.readFileSync(USER_FILE) : USER;
-    const password = PASSWORD_FILE ? fs.readFileSync(PASSWORD_FILE) : PASSWORD;
-    const database = DB_FILE ? fs.readFileSync(DB_FILE) : DB;
+    const host =  process.env.MYSQLDB_HOST;
+    const user =  process.env.MYSQLDB_USER ;
+    const password = process.env.MYSQLDB_ROOT_PASSWORD;
+    const database = process.env.MYSQLDB_DATABASE;
 
     await waitPort({ 
         host, 
@@ -37,13 +28,19 @@ async function init() {
         charset: 'utf8mb4',
     });
 
+    pool.getConnection(function(err,connection){
+        if(err) {
+          console.log("Error in connection database");
+          return;
+        }});
+
     return new Promise((acc, rej) => {
         pool.query(
             'CREATE TABLE IF NOT EXISTS todo_items (id varchar(36), name varchar(255), completed boolean) DEFAULT CHARSET utf8mb4',
             err => {
                 if (err) return rej(err);
 
-                console.log(`Connected to mysql db at host ${HOST}`);
+                console.log(`Connected to mysql db at host ${host}`);
                 acc();
             },
         );
